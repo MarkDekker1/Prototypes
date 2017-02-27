@@ -3,18 +3,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Integration parameters
-tmax=100.
+tmax=1000.
 dt=0.1
 tvec=np.linspace(0,tmax,tmax/dt+dt)
 
 # Physical parameters
-lda=0
-beta=0.3
-c1=0.2
+lda=1.
+beta=0.1
+c1=0.7
 c2=1.
-lag=0.
+lag=500.
 noiser=-0.5
 counter=1
+p=1.
 
 # Versions forcing
 def alpha_step(t):
@@ -32,9 +33,6 @@ def alpha_slowincrease(t): # with ceiling
         return -0.6
     return np.min([t/100.-0.4,0.6])
     
-def alpha_const(t): # with ceiling
-    return 0.1
-    
 def alpha_noisy(t):
     global noiser
     global counter
@@ -46,7 +44,7 @@ def alpha_noisy(t):
     return noiser
     
 def alpha_chosen(t):
-    return alpha_const(t)
+    return alpha_step(t)
 
 # Variations of mu(x)
 def mu_simple(x):
@@ -56,10 +54,10 @@ def mu_var(x):
     global counter
     global noiser
     c1=0
-    c2=2.
+    c2=2.5
     counter=counter+1
     if np.mod(counter,10)==0:
-        noiser= c1+np.random.normal(0,c2*np.max([x,0.1]))
+        noiser= c1+np.random.normal(0,c2*np.max([x,0.2]))
     return noiser
     
 def mu_mean(x):
@@ -73,21 +71,21 @@ def mu_mean(x):
     return noiser
     
 def mu_chosen(x):
-    return mu_simple(x)
+    return mu_var(x)
 
 # General equations
 def dx(t,x):
     if t>=lag:
-        return alpha_chosen(t-lag)-lda*x+x**3./3.
+        return alpha_chosen(t-lag)-lda*x+p*x**3./3.
     else:
-        return alpha_chosen(0)-lda*x+x**3./3.
+        return alpha_chosen(0)-lda*x+p*x**3./3.
 
 def dy_par(x,y):
-    return beta - mu_chosen(x) * y + y**3./3.
+    return beta + mu_chosen(x) * y - p* y**3./3.
     
 def dy_forc(x,y):
-    gamma=1.
-    return beta - gamma*y + y**3./3. + mu_chosen(x)
+    gamma=-1.
+    return beta - gamma*y -p* y**3./3. + mu_var(x)
     
 def dy_chosen(x,y):
     return dy_forc(x,y)
@@ -98,8 +96,8 @@ yvecs=[]
 dxvecs=[]
 dyvecs=[]
 #for alpha0 in -np.linspace(-0.7,0.7,15):
-x0=-0.5
-y0=-0
+x0=0.5
+y0=-0.5
 xvec=[x0]
 dxvec=[dx(0,x0)]
 tvec=[0]
@@ -132,7 +130,7 @@ while np.abs(yvec[len(yvec)-1])<1000 and i<tmax/dt:
 #print alpha0
     
 # Plot
-vertext=2
+vertext=3
 plt.semilogx(tvec,xvec,'b',linewidth=3)
 plt.semilogx(tvec,yvec,'r',linewidth=3)
 #plt.semilogx(tvec,dxvec,'b',linewidth=1)
@@ -145,7 +143,7 @@ plt.tick_params(axis='both',which='major',labelsize=15)
 plt.xlabel('Time',fontsize=15)
 plt.ylabel('x,y',fontsize=15)
 plt.show()
-#%%
+
 plt.plot(tvec,xvec,'b',linewidth=3)
 plt.plot(tvec,yvec,'r',linewidth=3)
 #plt.plot(tvec,dxvec,'b',linewidth=1)
@@ -171,7 +169,15 @@ plt.xlabel('Time',fontsize=15)
 plt.ylabel('x',fontsize=15)
 plt.show()
 #%%
-
+plt.style.use('ggplot')
+plt.hist(yvec[10:np.int(tmax/dt/2.)],bins=20)
+plt.hist(yvec[np.int(tmax/dt/2.):],bins=100)
+plt.tick_params(axis='both',which='major',labelsize=15)
+plt.legend(['Before Tipping','After Tipping'],fontsize=12)
+plt.xlabel('Value of x or y',fontsize=15)
+plt.ylabel('Frequency',fontsize=15)
+#plt.gca().set_yscale("log")
+#plt.ylim([50,10000])
 
 #%%
 x1=xvec
