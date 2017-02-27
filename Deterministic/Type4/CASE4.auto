@@ -1,0 +1,19 @@
+#===================================================
+# CASE2 general auto file
+#===================================================
+
+
+print "\n***Generate starting data***"
+
+
+print "\n***RUN ALPHA***"
+RUN0=run(e='CASE4',c='CASE4',ICP=['alpha'],)+run(e='CASE4',c='CASE4',ICP=['alpha'],DS='-')
+plot(RUN0,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False, user_point_symbol=' ')
+
+#print "\n***RUN PERIODS***"
+RUN1=run(RUN0('HB1'), ICP=['alpha',11],IPS=2,DSMAX=1e-5, NMX=50000, NPR=5000)#+run(RUN0('HB1'), IPS=2, DS='-',DSMAX=1e-5, NMX=50000, NPR=5000)
+plot(RUN1,stability=True,coloring_method='type',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False, user_point_symbol=' ')
+
+
+print "\n***Clean the directory***"
+cl()

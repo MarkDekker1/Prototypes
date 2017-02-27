@@ -1,0 +1,31 @@
+#===================================================
+# CASE2 general auto file
+#===================================================
+
+print "\n***Generate starting data***"
+
+
+print "\n***RUN ALPHA***"
+RUN0=run(e='CASE2',c='CASE2',ICP=['alpha'],)+run(e='CASE2',c='CASE2',ICP=['alpha'],DS='-')
+#plot(RUN0,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False, user_point_symbol=' ')
+
+#RUN1=run(runny('UZ1'),ICP=['c1'])
+
+#print "\n***RUN GAMMA***"
+#RUN0=run(e='CASE2',c='CASE2',ICP=['gmma'])+run(e='CASE2',c='CASE2',ICP=['gmma'],DS='-')
+
+#print "\n***RUN ALPHA***"
+#RUN1=run(RUN0("UZ1"),ICP=['alpha'])+run(RUN0('UZ1'),ICP=['alpha'],DS='-')
+#plot(RUN1)
+
+#print "\n***RUN GAMMA BACK***"
+#RUN2=run(RUN1("UZ1"),ICP=['gmma'], UZR={'gmma':2})+run(RUN1('UZ1'),ICP=['gmma'],DS='-', UZR={'gmma':2})
+#plot(RUN2)
+
+
+print "\n***RUN PERIODS***"
+RUN1=run(RUN0('HB1'), IPS=2,DSMAX=1e-5, NMX=50000, NPR=5000)+run(RUN0('HB1'), IPS=2, DS='-',DSMAX=1e-5, NMX=50000, NPR=5000)
+plot(RUN1,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False, user_point_symbol=' ')
+
+print "\n***Clean the directory***"
+cl()

@@ -1,0 +1,21 @@
+#===================================================
+# CASE1 general auto file
+#===================================================
+
+print "\n***Generate starting data***"
+
+print "\n***Run with parameter alpha***"
+
+RUN1=run(e='CASE1',c='CASE1',ICP=['alpha'])+run(e='CASE1',c='CASE1',ICP=['alpha'],DS='-')
+p0=plot(RUN1,stability=True,coloring_method='branch',use_labels=False,line_width=4,xlabel_fontsize=15,ylabel_fontsize=15,height=300,grid=False)
+
+#RUN0=run(e='CASE1',c='CASE1',ICP=['gmma'], DS='-')
+
+#RUN2=run(RUN0('UZ1'),ICP=['alpha'],DS='-')+run(RUN0('UZ1'),ICP=['alpha'])
+
+#RUN3=RUN1+RUN2
+
+#p1=plot(RUN3,stability=True,coloring_method='branch',color_list='black red green yellow')
+
+print "\n***Clean the directory***"
+cl()
